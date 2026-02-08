@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const autoScroll = gsap.to(track, {
       x: maxDrag,
-      duration: 30,
+      duration: 15,
       ease: 'none',
       repeat: -1,
       yoyo: true
