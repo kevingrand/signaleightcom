@@ -209,15 +209,32 @@ document.addEventListener('DOMContentLoaded', () => {
       + (slides.length - 1) * parseFloat(getComputedStyle(track).gap || 0);
     const maxDrag = -(totalWidth - track.parentElement.offsetWidth);
 
+    const autoScroll = gsap.to(track, {
+      x: maxDrag,
+      duration: 30,
+      ease: 'none',
+      repeat: -1,
+      yoyo: true
+    });
+
     if (typeof Draggable !== 'undefined') {
       Draggable.create(track, {
         type: 'x',
         bounds: { minX: maxDrag, maxX: 0 },
         inertia: true,
         edgeResistance: 0.75,
-        throwResistance: 2000
+        throwResistance: 2000,
+        onDragStart: () => autoScroll.pause(),
+        onThrowComplete: () => {
+          const currentX = gsap.getProperty(track, 'x');
+          const progress = Math.abs(currentX / maxDrag);
+          autoScroll.progress(progress).play();
+        }
       });
     }
+
+    track.addEventListener('mouseenter', () => autoScroll.pause());
+    track.addEventListener('mouseleave', () => autoScroll.play());
 
     gsap.from(slides, {
       x: 100,

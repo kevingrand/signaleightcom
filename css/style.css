@@ -417,6 +417,7 @@ h1, h2, h3 {
 .portfolio {
   padding: clamp(4rem, 10vh, 10rem) 0;
   overflow: hidden;
+  background: #F5F5F5;
 }
 
 .portfolio-inner {
