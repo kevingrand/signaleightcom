@@ -186,7 +186,53 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* --- H. Footer Horizontal Scroll Shift --- */
+  /* --- H. Portfolio Header Reveal --- */
+  const portfolioHeader = document.querySelectorAll('.portfolio .section-header .line-text');
+  if (portfolioHeader.length) {
+    gsap.to(portfolioHeader, {
+      y: 0,
+      duration: 1.2,
+      ease: 'expo.out',
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: '.portfolio .section-header',
+        start: 'top 80%'
+      }
+    });
+  }
+
+  /* --- I. Portfolio Draggable Carousel --- */
+  const track = document.querySelector('.portfolio-track');
+  if (track) {
+    const slides = track.querySelectorAll('.portfolio-slide');
+    const totalWidth = Array.from(slides).reduce((sum, s) => sum + s.offsetWidth, 0)
+      + (slides.length - 1) * parseFloat(getComputedStyle(track).gap || 0);
+    const maxDrag = -(totalWidth - track.parentElement.offsetWidth);
+
+    if (typeof Draggable !== 'undefined') {
+      Draggable.create(track, {
+        type: 'x',
+        bounds: { minX: maxDrag, maxX: 0 },
+        inertia: true,
+        edgeResistance: 0.75,
+        throwResistance: 2000
+      });
+    }
+
+    gsap.from(slides, {
+      x: 100,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      stagger: 0.12,
+      scrollTrigger: {
+        trigger: '.portfolio',
+        start: 'top 75%'
+      }
+    });
+  }
+
+  /* --- J. Footer Horizontal Scroll Shift --- */
   const footerLogo = document.querySelector('.footer-logo');
   if (footerLogo) {
     gsap.to(footerLogo, {
