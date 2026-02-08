@@ -93,15 +93,52 @@ document.addEventListener('DOMContentLoaded', () => {
   function setupCardLightUp() {
     if (!isMobile.matches) return;
 
-    document.querySelectorAll('.service-card').forEach((card) => {
+    const cards = document.querySelectorAll('.service-card');
+    let activeCard = null;
+
+    cards.forEach((card) => {
+      const glow = document.createElement('div');
+      glow.classList.add('card-glow');
+      card.appendChild(glow);
+    });
+
+    function lightUp(card) {
+      if (card === activeCard) return;
+
+      if (activeCard) {
+        const prev = activeCard;
+        gsap.to(prev.querySelector('.card-glow'), { opacity: 0, duration: 0.5, ease: 'power2.inOut' });
+        gsap.to(prev.querySelector('.service-icon'), { color: 'rgba(255,255,255,0.5)', duration: 0.5, ease: 'power2.inOut' });
+        gsap.to(prev.querySelector('.service-name'), { color: '#FFFFFF', duration: 0.5, ease: 'power2.inOut' });
+        gsap.to(prev.querySelector('.service-desc'), { color: 'rgba(255,255,255,0.45)', duration: 0.5, ease: 'power2.inOut' });
+      }
+
+      activeCard = card;
+      gsap.to(card.querySelector('.card-glow'), { opacity: 1, duration: 0.6, ease: 'power2.inOut' });
+      gsap.to(card.querySelector('.service-icon'), { color: '#050505', duration: 0.6, ease: 'power2.inOut' });
+      gsap.to(card.querySelector('.service-name'), { color: '#050505', duration: 0.6, ease: 'power2.inOut' });
+      gsap.to(card.querySelector('.service-desc'), { color: 'rgba(5,5,5,0.6)', duration: 0.6, ease: 'power2.inOut' });
+    }
+
+    function dimAll() {
+      if (!activeCard) return;
+      const prev = activeCard;
+      activeCard = null;
+      gsap.to(prev.querySelector('.card-glow'), { opacity: 0, duration: 0.5, ease: 'power2.inOut' });
+      gsap.to(prev.querySelector('.service-icon'), { color: 'rgba(255,255,255,0.5)', duration: 0.5, ease: 'power2.inOut' });
+      gsap.to(prev.querySelector('.service-name'), { color: '#FFFFFF', duration: 0.5, ease: 'power2.inOut' });
+      gsap.to(prev.querySelector('.service-desc'), { color: 'rgba(255,255,255,0.45)', duration: 0.5, ease: 'power2.inOut' });
+    }
+
+    cards.forEach((card) => {
       ScrollTrigger.create({
         trigger: card,
-        start: 'top 65%',
-        end: 'bottom 35%',
-        onEnter: () => card.classList.add('is-lit'),
-        onLeave: () => card.classList.remove('is-lit'),
-        onEnterBack: () => card.classList.add('is-lit'),
-        onLeaveBack: () => card.classList.remove('is-lit')
+        start: 'top 55%',
+        end: 'bottom 45%',
+        onEnter: () => lightUp(card),
+        onEnterBack: () => lightUp(card),
+        onLeave: () => { if (activeCard === card) dimAll(); },
+        onLeaveBack: () => { if (activeCard === card) dimAll(); }
       });
     });
   }
